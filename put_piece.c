@@ -15,7 +15,7 @@
 void	put_piece(t_brd *board, t_brd *piece, int player)
 {
 	static t_filler	*game = NULL;
-
+	t_coord			point;
 	
 	if (!game)
 	{
@@ -23,8 +23,10 @@ void	put_piece(t_brd *board, t_brd *piece, int player)
 		create_game(game, board, player);	
 	}
 	set_fin_goals(game, board);
-	ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
-	ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
+	point = find_point(game, board, piece);
+	ft_printf("point = (%i, %i)\n", point.i, point.j);
+	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
+	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 	//piece free
 }
 
@@ -53,19 +55,19 @@ void	set_fin_goals(t_filler *game, t_brd *board)
 	int			i;
 	int			j;
 
-	i = 0;
-	j = 0;
+	i = -1;
+	j = -1;
 	goal_new = NULL;
-	while (i < board->i)
+	while (++i < board->i)
 	{
-		while (j < board->j)
+		while (++j < board->j)
 		{
 			if (board->brd[i][j] == game->player.enemy)
 			{
 				pt.i = i;
 				pt.j = j;
-				goal_new = find_goal(pt, board, game);//здесь где-то сегфолт точка (13, 5) - проверить все!!!
-				if (game->first)
+				goal_new = find_goal(pt, board, game);
+				if (game->first)//эту часть можно вынести в отдельную ф-ию
 				{
 					game->first = 0;
 					game->player.enemy += 32;
@@ -74,26 +76,24 @@ void	set_fin_goals(t_filler *game, t_brd *board)
 				}
 				else
 				{
-					ft_printf("I'm here\n");
-					ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
-					ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
-					ft_printf("gnew1 = (%i, %i)\n", goal_new[0].i, goal_new[0].j);
-					ft_printf("gnew2 = (%i, %i)\n", goal_new[1].i, goal_new[1].j);
 					write_max_dst(game, goal_new);
 					compare_goals(game, goal_new);
-					clean_map(game);
-					ft_printf("RESULT\n");
-					ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
-					ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
+					clean_map(game);	
 				}
 				free(goal_new);
 			}
-			j++;
 		}
-		j = 0;
-		i++;
+		j = -1;
 	}
 }
+// ft_printf("I'm here\n");
+					// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
+					// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
+					// ft_printf("gnew1 = (%i, %i)\n", goal_new[0].i, goal_new[0].j);
+					// ft_printf("gnew2 = (%i, %i)\n", goal_new[1].i, goal_new[1].j);
+// ft_printf("RESULT\n");
+					// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
+					// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 //дальше если игра первая, то новые гоулы присваиваются в структуру гейм 
 // и переменная ферст меняется на ноль и брейк
 //если игра не первая, то мы отправляем новые гоулы и старые на сравнение

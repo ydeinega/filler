@@ -59,4 +59,6 @@ void			set_goal(t_filler *game, t_coord *goal, t_coord *edge, t_coord pt);
 void			compare_goals(t_filler *game, t_coord *goal_new);
 void			clean_map(t_filler *game);
 void			write_max_dst(t_filler *game, t_coord *goal_new);
+t_coord			find_point(t_filler *game, t_brd *board, t_brd *piece);
+int				check_piece(t_filler *game, t_brd *board, t_brd *piece, t_coord pt);
 #endif
