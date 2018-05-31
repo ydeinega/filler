@@ -48,7 +48,7 @@ typedef struct	s_filler
 
 t_brd			*create_board(char *line);
 void			fill_board(char **board, char *line, int *type);
-void			put_piece(t_brd *board, t_brd *piece, int player);
+void			put_piece(t_brd *board, t_brd **piece, int player);
 void			create_game(t_filler *game, t_brd *board, int player);
 void			set_fin_goals(t_filler *game, t_brd *board);
 t_coord			*find_goal(t_coord pt, t_brd *board, t_filler *game);
@@ -61,4 +61,5 @@ void			clean_map(t_filler *game);
 void			write_max_dst(t_filler *game, t_coord *goal_new);
 t_coord			find_point(t_filler *game, t_brd *board, t_brd *piece);
 int				check_piece(t_filler *game, t_brd *board, t_brd *piece, t_coord pt);
+void			clean_board(t_brd **board);
 #endif

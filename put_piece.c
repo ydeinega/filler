@@ -12,7 +12,7 @@
 
 #include "filler.h"
 
-void	put_piece(t_brd *board, t_brd *piece, int player)
+void	put_piece(t_brd *board, t_brd **piece, int player)
 {
 	static t_filler	*game = NULL;
 	t_coord			point;
@@ -23,11 +23,26 @@ void	put_piece(t_brd *board, t_brd *piece, int player)
 		create_game(game, board, player);	
 	}
 	set_fin_goals(game, board);
-	point = find_point(game, board, piece);
-	ft_printf("point = (%i, %i)\n", point.i, point.j);
+	point = find_point(game, board, *piece);
+	ft_printf("%i %i\n", point.i, point.j);
 	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
 	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
-	//piece free
+	clean_board(piece);
+}
+
+void	clean_board(t_brd **board)
+{
+	int i;
+
+	i = 0;
+	while (i < (*board)->i)
+	{
+		free ((*board)->brd[i]);
+		i++;
+	}
+	free ((*board)->brd);
+	free(*board);
+	*board = NULL;
 }
 
 void	create_game(t_filler *game, t_brd *board, int player)
