@@ -23,6 +23,8 @@ void	put_piece(t_brd *board, t_brd **piece, int player)
 		create_game(game, board, player);	
 	}
 	set_fin_goals(game, board);
+	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
+	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 	point = find_point(game, board, *piece);
 	ft_printf("%i %i\n", point.i, point.j);
 	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
@@ -56,6 +58,7 @@ void	create_game(t_filler *game, t_brd *board, int player)
 	while (++i < board->i)
 		game->map[i] = (int *)malloc(sizeof(int) * board->j);
 	game->first = 1;
+	game->count = 0;
 	game->player.me = player == 1 ? 'O' : 'X';
 	game->player.enemy = player == 1 ? 'X' : 'O';
 	game->size.i = board->i;

@@ -14,6 +14,7 @@
 # define FILLER_H
 # define BOARD 1
 # define PIECE -1
+# define ALT 1
 # include "./libft/libft.h"
 
 typedef struct	s_coord
@@ -41,6 +42,7 @@ typedef struct	s_filler
 	int			**map;
 	t_coord		size;
 	int			first;
+	int			count;
 	t_coord		goal1;
 	t_coord		goal2;
 	t_chr		player;
@@ -62,4 +64,6 @@ void			write_max_dst(t_filler *game, t_coord *goal_new);
 t_coord			find_point(t_filler *game, t_brd *board, t_brd *piece);
 int				check_piece(t_filler *game, t_brd *board, t_brd *piece, t_coord pt);
 void			clean_board(t_brd **board);
+void			set_point(t_filler *game, t_coord tmp, t_coord *point, int *min);
+void			set_count(t_filler *game, t_coord point);
 #endif

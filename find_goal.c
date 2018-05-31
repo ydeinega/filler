@@ -89,25 +89,25 @@ void	set_goal(t_filler *game, t_coord *goal, t_coord *edge, t_coord pt)
 	{
 		//ft_printf("I'm here 2\n");
 		if (goal[0].i == goal[1].i)
-			goal[1].j = pt.j - 1 >= 0 ? pt.j - 1 : pt.j + 1;
+			goal[1].j = pt.j - ALT >= 0 ? pt.j - ALT : pt.j + ALT;
 		else if (goal[0].j == goal[1].j)
-			goal[1].i = pt.i - 1 >= 0 ? pt.i - 1 : pt.i + 1;
+			goal[1].i = pt.i - ALT >= 0 ? pt.i - ALT : pt.i + ALT;
 		if (goal[0].i == goal[2].i)
-			goal[0].j = pt.j - 1 >= 0 ? pt.j - 1 : pt.j + 1;
+			goal[0].j = pt.j - ALT >= 0 ? pt.j - ALT : pt.j + ALT;
 		else if (goal[0].j == goal[2].j)
-			goal[0].i = pt.i - 1 >= 0 ? pt.i - 1 : pt.i + 1;
+			goal[0].i = pt.i - ALT >= 0 ? pt.i - ALT : pt.i + ALT;
 	}
-	else if (goal[0].i == goal[1].i && pt.j - 1 >= 0 && pt.j + 1 < game->size.j)
+	else if (goal[0].i == goal[1].i && pt.j - ALT >= 0 && pt.j + ALT < game->size.j)
 	{
 		//ft_printf("I'm here 3\n");
-		goal[0].j = pt.j - 1;
-		goal[1].j = pt.j + 1;
+		goal[0].j = pt.j - ALT;
+		goal[1].j = pt.j + ALT;
 	}
-	else if (goal[0].j == goal[1].j && pt.i - 1 >= 0 && pt.i + 1 < game->size.i)
+	else if (goal[0].j == goal[1].j && pt.i - ALT >= 0 && pt.i + ALT < game->size.i)
 	{
 		//ft_printf("I'm here 4\n");
-		goal[0].i = pt.i - 1;
-		goal[1].i = pt.i + 1;
+		goal[0].i = pt.i - ALT;
+		goal[1].i = pt.i + ALT;
 	}
 	else
 		goal_for_pt(game, goal, edge, pt);

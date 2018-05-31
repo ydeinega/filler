@@ -14,11 +14,11 @@
 
 t_coord	find_point(t_filler *game, t_brd *board, t_brd *piece)
 {
-	int		min;
-	int		i;
-	int		j;
-	t_coord	point;
-	t_coord	tmp;
+	int			i;
+	int			j;
+	int			min;
+	t_coord		point;
+	t_coord		tmp;
 
 	min = -1;
 	i = -1;
@@ -29,27 +29,86 @@ t_coord	find_point(t_filler *game, t_brd *board, t_brd *piece)
 		{
 			tmp.i = i;
 			tmp.j = j;
-			//ft_printf("tmp = (%i, %i)\n", tmp.i, tmp.j);
 			if (check_piece(game, board, piece, tmp))
-			{
-				// ft_printf("I'm here\n");
-				// ft_printf("tmp = (%i, %i)\n", tmp.i, tmp.j);
-				//ft_printf("min = %i\n", min);
-				if (min < 0 || (min >= 0 && (min > dst_mnh(tmp, game->goal1)
-					|| min > dst_mnh(tmp, game->goal2))))
-				{
-					//ft_printf("I'm here\n");
-					min = dst_mnh(tmp, game->goal1) < dst_mnh(tmp, game->goal2) ?
-					dst_mnh(tmp, game->goal1) : dst_mnh(tmp, game->goal2);
-					point = tmp;
-					//ft_printf("point = (%i, %i)\n", point.i, point.j);
-					//ft_printf("min = %i\n\n", min);
-				}
-			}
+				set_point(game, tmp, &point, &min);
 		}
 		j = -1;
 	}
 	return (point);
+}
+
+void	set_point(t_filler *game, t_coord tmp, t_coord *point, int *min)
+{
+	if (game->count == 0)
+	{
+		if (*min < 0 || (*min >= 0 && (*min > dst_mnh(tmp, game->goal1)
+		|| *min > dst_mnh(tmp, game->goal2))))
+		{
+			*min = dst_mnh(tmp, game->goal1) < dst_mnh(tmp, game->goal2) ?
+			dst_mnh(tmp, game->goal1) : dst_mnh(tmp, game->goal2);
+			*point = tmp;
+			set_count(game, *point);
+		}
+	}
+	else if (game->count == 1)
+	{
+		if (*min < 0 || (*min >= 0 && *min > dst_mnh(tmp, game->goal1)))
+		{
+			*min = dst_mnh(tmp, game->goal1);
+			*point = tmp;
+		}
+	}
+	else if (game->count == 2)
+	{
+		if (*min < 0 || (*min >= 0 && *min > dst_mnh(tmp, game->goal2)))
+		{
+			*min = dst_mnh(tmp, game->goal2);
+			*point = tmp;
+		}
+	}
+}
+
+void	set_count(t_filler *game, t_coord point)
+{
+	if (game->goal1.i == game->goal2.i)
+	{
+		if (point.i == game->goal1.i)
+		{
+			if (dst_mnh(point, game->goal1) > dst_mnh(point, game->goal2))
+				game->count = 1;
+			else
+				game->count = 2;
+		}
+	}
+	else if (game->goal1.j == game->goal2.j)
+	{	
+		if (point.j == game->goal1.j)
+		{
+			if (dst_mnh(point, game->goal1) > dst_mnh(point, game->goal2))
+				game->count = 1;
+			else
+				game->count = 2;
+		}
+	}
+	else
+	{
+		if ((game->goal1.i == 0 || game->goal1.i == game->size.i - 1)
+			&& point.i == game->goal1.i && dst_mnh(point, game->goal2) >=
+			dst_mnh(game->goal1, game->goal2))
+			game->count = 2;
+		else if ((game->goal1.j == 0 || game->goal1.j == game->size.j - 1)
+			&& point.j == game->goal1.j && dst_mnh(point, game->goal2) >=
+			dst_mnh(game->goal1, game->goal2))
+			game->count = 2;
+		else if ((game->goal2.i == 0 || game->goal2.i == game->size.i - 1)
+			&& point.i == game->goal2.i && dst_mnh(point, game->goal1) >=
+			dst_mnh(game->goal1, game->goal2))
+			game->count = 1;
+		else if ((game->goal2.j == 0 || game->goal2.j == game->size.j - 1)
+			&& point.j == game->goal2.j && dst_mnh(point, game->goal1) >=
+			dst_mnh(game->goal1, game->goal2))
+			game->count = 1;
+	}
 }
 
 int		check_piece(t_filler *game, t_brd *board, t_brd *piece, t_coord pt)
