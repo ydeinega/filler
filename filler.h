@@ -29,6 +29,7 @@ typedef struct	s_brd
 	int			j;
 	//t_coord	size;
 	char		**brd;
+	char		**tmp;
 }				t_brd;
 
 typedef struct	s_chr
@@ -52,7 +53,7 @@ t_brd			*create_board(char *line);
 void			fill_board(char **board, char *line, int *type);
 void			put_piece(t_brd *board, t_brd **piece, int player);
 void			create_game(t_filler *game, t_brd *board, int player);
-void			set_fin_goals(t_filler *game, t_brd *board);
+void			set_fin_goals(t_filler *game, t_brd *board, int player);
 t_coord			*find_goal(t_coord pt, t_brd *board, t_filler *game);
 int				dst_mnh(t_coord a, t_coord b);
 t_coord			*set_edge(int i, int j);
@@ -65,5 +66,8 @@ t_coord			find_point(t_filler *game, t_brd *board, t_brd *piece);
 int				check_piece(t_filler *game, t_brd *board, t_brd *piece, t_coord pt);
 void			clean_board(t_brd **board);
 void			set_point(t_filler *game, t_coord tmp, t_coord *point, int *min);
-void			set_count(t_filler *game, t_coord point);
+void			set_count(t_filler *game, t_brd *board, t_brd *piece, t_coord pt);
+int				check_count(t_filler *game, t_coord point);
+void			change_board(t_filler *game, t_brd *board);
+char			**copy_board(t_brd *board, char **brd);
 #endif

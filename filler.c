@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "filler.h"
+#include <fcntl.h>//del
 
 t_brd	*create_board(char *line)
 {
@@ -49,12 +50,16 @@ int		main(void)
 	t_brd	*piece;
 	int		type;
 	int		player;
+	int		fd;//del
 
 	board = NULL;
 	piece = NULL;
 	type = 0;
-	while (get_next_line(0, &line))
+	fd = open("shit.txt", O_CREAT | O_WRONLY | O_APPEND);
+	while (get_next_line(0, &line))//дозаписывать в файл
 	{
+		ft_putstr_fd(line, fd);
+		ft_putstr_fd("\n", fd);
 		if (type == BOARD)
 			fill_board(board->brd, line, &type);
 		if (type == PIECE)

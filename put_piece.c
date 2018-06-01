@@ -22,14 +22,80 @@ void	put_piece(t_brd *board, t_brd **piece, int player)
 		game = (t_filler *)malloc(sizeof(t_filler));
 		create_game(game, board, player);	
 	}
-	set_fin_goals(game, board);
+	change_board(game, board);
+	// int i, j;
+	// i = 0;
+	// j = 0;
+	// while (i < board->i)
+	// {
+	// 	while (j < board->j)
+	// 	{
+	// 		ft_printf("%c", board->brd[i][j]);
+	// 		j++;
+	// 	}
+	// 	ft_printf("\n");
+	// 	j = 0;
+	// 	i++;
+	// }
+	set_fin_goals(game, board, player);
 	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
 	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 	point = find_point(game, board, *piece);
 	ft_printf("%i %i\n", point.i, point.j);
+	// ft_printf("count = %i\n", game->count);
+	// ft_printf("\n");
 	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
 	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 	clean_board(piece);
+}
+
+void	change_board(t_filler *game, t_brd *board)
+{
+	char	**tmp;
+	int		i;
+	int		j;
+
+	tmp = NULL;
+	i = 0;
+	j = 0;
+	if (game->first)
+		board->tmp = copy_board(board, board->brd);
+	else
+	{
+		tmp = copy_board(board, board->brd);
+		while (i < board->i)
+		{
+			while (j < board->j)
+			{
+				if (board->brd[i][j] == game->player.enemy - 32 &&
+					board->tmp[i][j] != game->player.enemy - 32)
+					board->brd[i][j] = game->player.enemy;
+				j++;
+			}
+			j = 0;
+			i++;
+		}
+		//free board->tmp
+		board->tmp = tmp;
+	}
+}
+
+char	**copy_board(t_brd *board, char **brd)
+{
+	char	**new;
+	int		i;
+
+	i = 0;
+	new = (char **)malloc(sizeof(char *) * (board->i + 1));
+	if (!new)
+		return (NULL);
+	new[board->i] = NULL;
+	while (i < board->i)
+	{
+		new[i] = ft_strdup(board->brd[i]);
+		i++;
+	}
+	return (new);
 }
 
 void	clean_board(t_brd **board)
@@ -66,7 +132,47 @@ void	create_game(t_filler *game, t_brd *board, int player)
 	clean_map(game);
 }
 
-void	set_fin_goals(t_filler *game, t_brd *board)
+// void	set_fin_goals(t_filler *game, t_brd *board, int player)
+// {
+// 	t_coord		*goal_new;//free
+// 	t_coord		pt;
+// 	int			i;
+// 	int			j;
+
+// 	i = -1;
+// 	j = -1;
+// 	goal_new = NULL;
+// 	while (++i < board->i)
+// 	{
+// 		while (++j < board->j)
+// 		{
+// 			if (board->brd[i][j] == game->player.enemy ||
+// 				board->brd[i][j] == game->player.enemy + 32)
+// 			{
+// 				pt.i = i;
+// 				pt.j = j;
+// 				goal_new = find_goal(pt, board, game);
+// 				if (game->first)//эту часть можно вынести в отдельную ф-ию
+// 				{
+// 					game->first = 0;
+// 					//game->player.enemy += 32;
+// 					game->goal1 = goal_new[0];
+// 					game->goal2 = goal_new[1];
+// 				}
+// 				else
+// 				{
+// 					write_max_dst(game, goal_new);
+// 					compare_goals(game, goal_new);
+// 					clean_map(game);	
+// 				}
+// 				free(goal_new);
+// 			}
+// 		}
+// 		j = -1;
+// 	}
+// }
+
+void	set_fin_goals(t_filler *game, t_brd *board, int player)
 {
 	t_coord		*goal_new;//free
 	t_coord		pt;
@@ -80,7 +186,8 @@ void	set_fin_goals(t_filler *game, t_brd *board)
 	{
 		while (++j < board->j)
 		{
-			if (board->brd[i][j] == game->player.enemy)
+			if (board->brd[i][j] == game->player.enemy || (game->first &&
+				player == 2 && board->brd[i][j] == game->player.enemy + 32))
 			{
 				pt.i = i;
 				pt.j = j;
