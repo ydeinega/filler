@@ -38,12 +38,12 @@ void	put_piece(t_brd *board, t_brd **piece, int player)
 	// 	i++;
 	// }
 	set_fin_goals(game, board, player);
-	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
-	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
+	ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
+	ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 	point = find_point(game, board, *piece);
 	ft_printf("%i %i\n", point.i, point.j);
-	// ft_printf("count = %i\n", game->count);
-	// ft_printf("\n");
+	ft_printf("count = %i\n", game->count);
+	ft_printf("\n");
 	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
 	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
 	clean_board(piece);
@@ -54,12 +54,10 @@ void	change_board(t_filler *game, t_brd *board)
 	char	**tmp;
 	int		i;
 	int		j;
-	int		count;//new
 
 	tmp = NULL;
 	i = 0;
 	j = 0;
-	count = 0;//new
 	if (game->first)
 		board->tmp = copy_board(board, board->brd);
 	else
@@ -71,12 +69,7 @@ void	change_board(t_filler *game, t_brd *board)
 			{
 				if (board->brd[i][j] == game->player.enemy - 32 &&
 					board->tmp[i][j] != game->player.enemy - 32)
-				{
 					board->brd[i][j] = game->player.enemy;
-					game->en.i = count == 0 ? i : game->en.i;//new
-					game->en.j = count == 0 ? j : game->en.j;//new
-					count++;//new
-				} 
 				j++;
 			}
 			j = 0;
@@ -136,8 +129,6 @@ void	create_game(t_filler *game, t_brd *board, int player)
 	game->player.enemy = player == 1 ? 'X' : 'O';
 	game->size.i = board->i;
 	game->size.j = board->j;
-	game->en.i = 0;
-	game->en.j = 0;
 	clean_map(game);
 }
 

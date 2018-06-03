@@ -46,8 +46,6 @@ typedef struct	s_filler
 	int			count;
 	t_coord		goal1;
 	t_coord		goal2;
-	t_coord		touch;//new
-	t_coord		en;
 	t_chr		player;
 }				t_filler;
 

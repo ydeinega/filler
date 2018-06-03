@@ -50,37 +50,30 @@ void	set_point(t_filler *game, t_coord tmp, t_coord *point, int *min)
 	// ft_printf("count = %i\n", game->count);
 	// ft_printf("goal1 = (%i, %i)\n", game->goal1.i, game->goal1.j);
 	// ft_printf("goal2 = (%i, %i)\n", game->goal2.i, game->goal2.j);
-	int goal_num;
-
-	goal_num = 1;
 	if (game->count == 0)
 	{
-		if (dst_mnh(game->en, game->goal1) < dst_mnh(game->en, game->goal2))
-			goal_num = 1;
-		else
-			goal_num = 2;
-		// if (*min < 0 || (*min >= 0 && (*min > dst_mnh(game->touch, game->goal1)
-		// || *min > dst_mnh(game->touch, game->goal2))))
-		// {
-		// 	*min = dst_mnh(game->touch, game->goal1) < dst_mnh(game->touch, game->goal2) ?
-		// 	dst_mnh(game->touch, game->goal1) : dst_mnh(game->touch, game->goal2);
-		// 	*point = tmp;
-		// 	// set_count(game, *point);
-		// }
-	}
-	if (game->count == 1 || goal_num == 1)
-	{
-		if (*min < 0 || (*min >= 0 && *min > dst_mnh(game->touch, game->goal1)))
+		if (*min < 0 || (*min >= 0 && (*min > dst_mnh(tmp, game->goal1)
+		|| *min > dst_mnh(tmp, game->goal2))))
 		{
-			*min = dst_mnh(game->touch, game->goal1);
+			*min = dst_mnh(tmp, game->goal1) < dst_mnh(tmp, game->goal2) ?
+			dst_mnh(tmp, game->goal1) : dst_mnh(tmp, game->goal2);
+			*point = tmp;
+			// set_count(game, *point);
+		}
+	}
+	else if (game->count == 1)
+	{
+		if (*min < 0 || (*min >= 0 && *min > dst_mnh(tmp, game->goal1)))
+		{
+			*min = dst_mnh(tmp, game->goal1);
 			*point = tmp;
 		}
 	}
-	if (game->count == 2 || goal_num == 2)
+	else if (game->count == 2)
 	{
-		if (*min < 0 || (*min >= 0 && *min > dst_mnh(game->touch, game->goal2)))
+		if (*min < 0 || (*min >= 0 && *min > dst_mnh(tmp, game->goal2)))
 		{
-			*min = dst_mnh(game->touch, game->goal2);
+			*min = dst_mnh(tmp, game->goal2);
 			*point = tmp;
 		}
 	}
@@ -153,10 +146,7 @@ int		check_piece(t_filler *game, t_brd *board, t_brd *piece, t_coord pt)
 		{
 			if (piece->brd[i][j] == '*' && (board->brd[pt.i][pt.j] == game->player.me
 				|| board->brd[pt.i][pt.j] == game->player.me + 32))
-			{
-				touch++;
-				game->touch = pt;//new
-			}
+				touch++;	
 			else if (piece->brd[i][j] == '*' && board->brd[pt.i][pt.j] != '.')
 				return (0);
 			pt.j++;
