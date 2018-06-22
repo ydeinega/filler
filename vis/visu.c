@@ -1,6 +1,7 @@
 #include "filler.h"
 #include <fcntl.h>//
 #include <ncurses.h>
+#include <stdio.h>
 
 void	print_board(t_visu *game)
 {
@@ -20,9 +21,7 @@ void	print_board(t_visu *game)
 			else if (game->board->brd[i][j] == 'o' || game->board->brd[i][j] == 'x')
 			{
 				mvprintw(i, j, "%c", game->board->brd[i][j]);
-				while (time < 10000000)
-					time++;
-				time = 0;
+				usleep(100000);
 				refresh();
 			}
 			j++;
@@ -45,25 +44,19 @@ void	get_name(char *line, t_visu *game)
 {
 	if (ft_atoi(&(ft_strchr(line, 'p')[1])) == 1)
 		game->name_p1 = ft_strsub(line, ft_strchr(line, '/') - line + 1, ft_strchr(line, '.') - ft_strchr(line, '/') - 1);
-	printw("name = |%s|\n", game->name_p1);
-	refresh();
+	if (ft_atoi(&(ft_strchr(line, 'p')[1])) == 2)
+	{
+		game->name_p2 = ft_strsub(line, ft_strchr(line, '/') - line + 1, ft_strchr(line, '.') - ft_strchr(line, '/') - 1);
+		printw("FILLER\n");
+		printw("p1 = |%s|\n", game->name_p1);
+		printw("p2 = |%s|\n", game->name_p2);
+	}
 }
 
 void	get_score(char *line, t_visu *game)
 {
 	game->type = FIN;
 
-	printw("I'm here 1\n");
-	refresh();
-	int i;
-	i = 0;
-	while (i < 100000000)
-		i++;
-	i = 0;
-	while (i < 100000000)
-		i++;
-	while (i < 100000000)
-		i++;
 }
 
 t_visu	*create_game_visu(void)
@@ -109,19 +102,10 @@ int		main(void)
 		if (game->type == FIN)
 		{
 			//print_score(game);
-			printw("I'm here 2\n");
 			refresh();
-			break ;	
 		}
-		// if (end_game(line))
-		// 	break ;
-		// endwin();
 	}
-	if (getch() == EOF)
-	{
-		printw("I'm here 3\n");
-		refresh();
-	}
-	//endwin();
+	usleep(3000000);
+	endwin();
 	//clean_game_visu(game);
 }
