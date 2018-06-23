@@ -17,8 +17,7 @@
 # define FIN -2
 # include "./libft/libft.h"
 # include <fcntl.h>
-// # include <sys/types.h>
-// # include <sys/stat.h>
+# include <ncurses.h>
 
 typedef struct	s_coord
 {
@@ -58,6 +57,7 @@ typedef	struct	s_visu
 	int			type;
 	t_brd		*board;
 	t_brd		*prev;
+	WINDOW		*win;
 }				t_visu;
 
 t_brd			*create_brd(char *line);
