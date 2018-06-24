@@ -14,6 +14,8 @@ NAME = ydeineha.filler
 
 LIB = libft.a
 
+VISU = visu
+
 FLAGS = -Wall -Wextra -Werror -I. -c
 
 SRCS_LIB = ./libft/ft_memset.c ./libft/ft_bzero.c ./libft/ft_memcpy.c ./libft/ft_memccpy.c ./libft/ft_memmove.c \
@@ -31,7 +33,9 @@ SRCS_LIB = ./libft/ft_memset.c ./libft/ft_bzero.c ./libft/ft_memcpy.c ./libft/ft
 ./libft/conv_num.c ./libft/dollar_flag.c ./libft/flags.c ./libft/zero_width_prc.c ./libft/ft_printf.c ./libft/itoa_base.c ./libft/sign_num.c \
 ./libft/star_flag.c ./libft/str_num.c ./libft/width_num.c ./libft/nonvalid.c ./libft/str_wchar.c
 
-SRCS = filler.c put_piece.c check_piece.c
+SRCS = filler.c put_piece.c check_piece.c board.c
+
+SRCS_VISU = visu.c print_board.c board.c initialize.c
 
 OBJS_LIB = ft_memset.o ft_bzero.o ft_memcpy.o ft_memccpy.o ft_memmove.o \
 ft_memchr.o ft_memcmp.o ft_strlen.o ft_strdup.o ft_strcpy.o ft_strncpy.o \
@@ -50,6 +54,8 @@ width_num.o nonvalid.o str_wchar.o
 
 OBJS = $(SRCS:.c=.o)
 
+OBJS_VISU = $(SRCS_VISU:.c=.o)
+
 all: $(NAME)
 
 $(LIB): 
@@ -61,12 +67,18 @@ $(NAME): $(LIB)
 	gcc $(SRCS) $(FLAGS)
 	gcc $(OBJS) -L. -lft -o $(NAME)
 
+$(VISU): $(LIB)
+	gcc $(SRCS_VISU) $(FLAGS)
+	gcc $(OBJS_VISU) -L. -lft -lncurses -o $(NAME)
+
 clean: 
 	rm -rf $(OBJS)
 	rm -rf $(OBJS_LIB)
+	rm -rf $(OBJS_VISU)
 
 fclean: clean
 	rm -rf $(LIB)
 	rm -rf $(NAME)
+	rm -rf $(VISU)
 
 re: fclean all

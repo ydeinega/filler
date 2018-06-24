@@ -15,7 +15,6 @@
 # define BOARD 1
 # define PIECE -1
 # include "./libft/libft.h"
-# include <fcntl.h>//
 # include <ncurses.h>
 
 typedef struct	s_coord
@@ -52,6 +51,8 @@ typedef	struct	s_visu
 	char		*name_p2;
 	int			score_p1;
 	int			score_p2;
+	int			first;
+	int			type;
 	t_coord		wpos;
 	t_coord		score1;
 	t_coord		score2;
@@ -60,10 +61,6 @@ typedef	struct	s_visu
 	t_coord		filler;
 	t_coord		wins;
 	t_coord		max;
-	int			max_i;
-	int			max_j;
-	int			first;
-	int			type;
 	t_brd		*board;
 	WINDOW		*win;
 }				t_visu;
@@ -77,4 +74,16 @@ int				dst_mnh(t_coord a, t_coord b);
 int				check_piece(t_filler *game, t_brd *board,
 				t_brd *piece, t_coord pt);
 void			clean_board(t_brd **board);
+t_visu			*create_game_visu(void);
+void			get_name(char *line, t_visu *game);
+void			get_score(char *line, t_visu *game);
+void			print_score(t_visu *game);
+void			print_board(t_visu *game);
+void			print_move(t_visu *game, int i, int j);
+void			initialize(t_visu *game);
+void			print_first(t_visu *game);
+void			get_positions(t_visu *game);
+void			get_ipositions(t_visu *game);
+void			get_jpositions(t_visu *game);
+void			clean_game_visu(t_visu *game);
 #endif
