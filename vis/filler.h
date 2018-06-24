@@ -14,9 +14,8 @@
 # define FILLER_H
 # define BOARD 1
 # define PIECE -1
-# define FIN -2
 # include "./libft/libft.h"
-# include <fcntl.h>
+# include <fcntl.h>//
 # include <ncurses.h>
 
 typedef struct	s_coord
@@ -53,10 +52,18 @@ typedef	struct	s_visu
 	char		*name_p2;
 	int			score_p1;
 	int			score_p2;
+	t_coord		wpos;
+	t_coord		score1;
+	t_coord		score2;
+	t_coord		max;
+	int			score_pos;
+	int			score1_pos;
+	int			score2_pos;
+	int			max_i;
+	int			max_j;
 	int			first;
 	int			type;
 	t_brd		*board;
-	t_brd		*prev;
 	WINDOW		*win;
 }				t_visu;
 

@@ -1,80 +1,97 @@
 #include "filler.h"
-#include <fcntl.h>//
-#include <ncurses.h>
-#include <stdio.h>
 
-void	create_window(t_visu *game)
+void	clean_game_visu(t_visu *game)
 {
-	WINDOW	*win;
-	WINDOW	*win1;
-	WINDOW	*win2;
-	WINDOW	*win3;
-	//int starty, startx;
-	int i;
-	i = 2;
-	//find_start(game, &starty, &startx);
-	printw ("i = %i j = %i\n", game->board->i, game->board->j);
-	refresh();
-	start_color();
-	init_pair(1, COLOR_WHITE, COLOR_RED);
-	game->win = newwin(2, 3, 10, 10);
-	win1 = newwin(2, 3, 10, 7);
-	win = newwin(2, 3, 10, 13);
-	win2 = newwin(2, 3, 9, 13);
-	win3 = newwin(2, 3, 9, 10);
-	//game->win = newwin(game->board->i * 2 + 1, game->board->j * 2, 10, 10);
-	box(game->win, 0, 0);
-	box(win1, 0, 0);
-	box(win, 0, 0);
-	box(win2, 0, 0);
-	box(win3, 0, 0);
-	wbkgd(game->win, COLOR_PAIR(1) | A_BOLD);
-	//wbkgdset(game->win, COLOR_PAIR(1));
-	//mvwprintw(game->win, 1, 1, "ccc");
-	// while (i < game->board->i * 2)
-	// {
-	// 	mvwhline(game->win, i, 1, ACS_HLINE, game->board->j * 2 - 2);
-	// 	i += 2;
-	// }
-	// i = 2;
-	// while (i < game->board->j * 2)
-	// {
-	// 	mvwvline(game->win, 1, i, ACS_VLINE, game->board->i * 2);
-	// 	i += 2;
-	// }
-	wrefresh(game->win);
-	wrefresh(win1);
-	wrefresh(win);
-	wrefresh(win2);
-	wrefresh(win3);
+	if (game->name_p1)
+		ft_strdel(&(game->name_p1));
+	if (game->name_p2)
+		ft_strdel(&(game->name_p2));
+	if (game->win)
+		delwin(game->win);
+	if (game->board)
+		clean_board(&(game->board));
 }
 
-void	print_first(t_visu *game)
+void	create_window(t_visu *game, int max_i, int max_j)
 {
 	int i;
 	int j;
 
-	i = 0;
-	j = 0;
-	while (i < game->board->i)
+	i = max_i - game->board->i - 2;
+	j = (max_j - game->board->j - 2) / 2;
+	if (i < 4)
+		i = 0;
+	else if (i == 4)
+		i = 3;
+	else if (i < 10)
+		i = 4;
+	else
+		i = 6;
+	game->wpos.i = i;
+	game->wpos.j = j;
+	game->score1.i = i < 4 ? 0 : i + game->board->i + 2;
+	game->score2.i = i < 4 ? 0 : i + game->board->i + 2;
+	game->score_pos = i + game->board->i + 2;
+	game->win = newwin(game->board->i + 2, game->board->j + 2, i, j);
+	box(game->win, 0, 0);
+	refresh();
+}
+
+void	print_first(t_visu *game, int max_i, int max_j)
+{
+	int i;
+	int j;
+	int name1_pos;
+	int name2_pos;
+
+	i = -1;
+	j = -1;
+	while (++i < game->board->i)
 	{
-		while (j < game->board->j)
-		{
-			if (game->first)
-				mvwprintw(game->win, i + 1, j + 1, "%c", game->board->brd[i][j]);
-			j++;
-		}
-		j = 0;
-		i++;
+		while (++j < game->board->j)
+			mvwprintw(game->win, i + 1, j + 1, "%c", game->board->brd[i][j]);
+		j = -1;
 	}
-	wrefresh(game->win);
-	usleep(1000000);
+	start_color();
+	init_pair(1, COLOR_WHITE, COLOR_MAGENTA);
+	init_pair(2, COLOR_WHITE, COLOR_CYAN);
+	attron(A_BLINK | A_BOLD);
+	mvprintw(2, (max_j - ft_strlen("F I L L E R")) / 2, "F I L L E R");
+	attron(COLOR_PAIR(1));
+	name1_pos = (max_j - ft_strlen(game->name_p1) - ft_strlen(game->name_p2) - 10) / 2;
+	name2_pos = name1_pos + ft_strlen(game->name_p1) + 10;
+	game->score1_pos = name1_pos;
+	game->score2_pos = name2_pos;
+	mvprintw(4, name1_pos, "%s", game->name_p1);
+	attroff(COLOR_PAIR(1));
+	attron(COLOR_PAIR(2));
+	mvprintw(4, name2_pos, "%s", game->name_p2);
+	attroff(COLOR_PAIR(2));
+	refresh();
 }
 
 void	initialize(t_visu *game)
 {
-	create_window(game);
-	//print_first(game);
+	int max_i;
+	int max_j;
+
+	getmaxyx(stdscr, max_i, max_j);
+	if (max_i < game->board->i || max_j < game->board->j)
+	{
+		attron(A_BOLD);
+		printw("\nPlease, make the window bigger and start the game once again!\n");
+		refresh();
+		usleep(5000000);
+		clean_game_visu(game);
+		endwin();
+		exit(1);
+	}
+	game->max_i = max_i;
+	game->max_j = max_j;
+	create_window(game, max_i, max_j);
+	print_first(game, max_i, max_j);
+	game->first = 0;
+	usleep(500000);
 }
 
 void	print_board(t_visu *game)
@@ -82,32 +99,37 @@ void	print_board(t_visu *game)
 	int i;
 	int j;
 
-	i = 0;
-	j = 0;
+	i = -1;
+	j = -1;
 	if (game->first)
-	{
-		initialize(game);//this function prints names and window and fields
-		game->first = 0;
-	}
-	// else
-	// {	
-	// 	while (i < game->board->i)
-	// 	{
-	// 		while (j < game->board->j)
-	// 		{
+		initialize(game);
+	else
+	{	
+		while (++i < game->board->i)
+		{
+			while (++j < game->board->j)
+			{
 			
-	// 			if (game->board->brd[i][j] == 'o' || game->board->brd[i][j] == 'x')
-	// 			{
-	// 				mvwprintw(game->win, i + 1, j + 1, "%c", game->board->brd[i][j]);
-	// 				usleep(15000);
-	// 				wrefresh(game->win);
-	// 			}
-	// 			j++;
-	// 		}
-	// 		j = 0;
-	// 		i++;
-	// 	}
-	// }
+				if (game->board->brd[i][j] == 'o')
+				{
+					wattron(game->win, COLOR_PAIR(1) | A_BLINK | A_BOLD);
+					mvwprintw(game->win, i + 1, j + 1, "O");
+					usleep(15000);
+					wrefresh(game->win);
+					wattroff(game->win, COLOR_PAIR(1) | A_BLINK | A_BOLD);
+				}
+				else if (game->board->brd[i][j] == 'x')
+				{
+					wattron(game->win, COLOR_PAIR(2) | A_BLINK | A_BOLD);
+					mvwprintw(game->win, i + 1, j + 1, "X");
+					usleep(15000);
+					wrefresh(game->win);
+					wattroff(game->win, COLOR_PAIR(2) | A_BLINK | A_BOLD);
+				}
+			}
+			j = -1;
+		}
+	}
 	game->type = -1;
 }
 
@@ -118,16 +140,37 @@ void	get_name(char *line, t_visu *game)
 	if (ft_atoi(&(ft_strchr(line, 'p')[1])) == 2)
 	{
 		game->name_p2 = ft_strsub(line, ft_strchr(line, '/') - line + 1, ft_strchr(line, '.') - ft_strchr(line, '/') - 1);
-		printw("\nFILLER\n");
-		printw("\np1 = |%s|   ", game->name_p1);
-		printw("p2 = |%s|\n", game->name_p2);
-		refresh();
 	}
 }
 
 void	get_score(char *line, t_visu *game)
 {
-	game->type = FIN;
+	int pos;
+
+	pos = 0;
+	if (ft_strchr(line, 'O'))
+		game->score_p1 = ft_atoi(&(ft_strchr(line, ':')[1]));
+	if (ft_strchr(line, 'X'))
+	{
+		game->score_p2 = ft_atoi(&(ft_strchr(line, ':')[1]));
+		attron(COLOR_PAIR(1));
+		mvprintw(game->score_pos, game->score1_pos, "%d", game->score_p1);
+		if (game->score_p1 > game->score_p2)
+		{
+			pos = (game->max_j - ft_strlen(game->name_p1) - 10) / 2; 
+			mvprintw(game->score_pos + 2, pos, "%s W I N S !", game->name_p1);
+		}
+		attroff(COLOR_PAIR(1));
+		attron(COLOR_PAIR(2));
+		mvprintw(game->score_pos, game->score2_pos, "%d", game->score_p2);
+		if (game->score_p1 < game->score_p2)
+		{
+			pos = (game->max_j - ft_strlen(game->name_p2) - 10) / 2; 
+			mvprintw(game->score_pos + 2, pos, "%s W I N S !", game->name_p2);
+		}
+		attroff(COLOR_PAIR(2));
+		refresh();
+	}
 
 }
 
@@ -144,7 +187,6 @@ t_visu	*create_game_visu(void)
 	game->score_p2 = 0;
 	game->first = 1;
 	game->board = NULL;
-	game->prev = NULL;
 	game->type = -1;
 	game->win = NULL;
 	return (game);
@@ -172,13 +214,8 @@ int		main(void)
 		if (game->type == 0 && game->board)
 			print_board(game);
 		ft_strdel(&line);
-		if (game->type == FIN)
-		{
-			//print_score(game);
-			refresh();
-		}
 	}
 	usleep(5000000);
 	endwin();
-	//clean_game_visu(game);
+	clean_game_visu(game);
 }
