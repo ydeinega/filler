@@ -55,10 +55,11 @@ typedef	struct	s_visu
 	t_coord		wpos;
 	t_coord		score1;
 	t_coord		score2;
+	t_coord		name1;
+	t_coord		name2;
+	t_coord		filler;
+	t_coord		wins;
 	t_coord		max;
-	int			score_pos;
-	int			score1_pos;
-	int			score2_pos;
 	int			max_i;
 	int			max_j;
 	int			first;
