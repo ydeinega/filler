@@ -35,14 +35,14 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME):
-	gcc $(SRCS) $(FLAGS)
-	ar rc $(NAME) $(OBJS)
-	ranlib $(NAME)
+	@gcc $(SRCS) $(FLAGS)
+	@ar rc $(NAME) $(OBJS)
+	@ranlib $(NAME)
 
 clean:
-	/bin/rm -f $(OBJS)
+	@rm -f $(OBJS)
 
 fclean: clean
-	/bin/rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
